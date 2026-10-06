@@ -15,6 +15,10 @@ export function expandPath(value, cwd = process.cwd()) {
 		expanded = path.join(process.env.HOME ?? '', expanded.slice(1));
 	}
 
+
+
+
+
 	return path.resolve(cwd, expanded);
 }
 
