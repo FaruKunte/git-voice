@@ -52,23 +52,81 @@ Flags: `--rc-file <path>` (override the rc file), `--out <path>`,
 
 ## Use your own voice
 
-Record yourself and point the config at the file:
+Instead of the synthetic voice, play a recording of yourself.
+
+### 1. Prerequisites
+
+Recording uses `ffmpeg`. Playback is built in.
 
 ```sh
-git-push-voice record --seconds 3        # saves ~/.config/git-push-voice/clip.wav
-git config --global pushvoice.audio ~/.config/git-push-voice/clip.wav
-git push                                 # plays your recording instead of TTS
+ffmpeg -version || brew install ffmpeg     # macOS
 ```
 
-Pick a microphone with `git-push-voice record --list-devices` and
-`--device <n>`. `git-push-voice play <file>` previews any clip.
+On first record, macOS asks for microphone permission — allow it in
+**System Settings → Privacy & Security → Microphone** for your terminal.
 
-`pushvoice.audio` also accepts a **folder** — one of its audio files
+### 2. Pick a microphone
+
+```sh
+$ git-push-voice record --list-devices
+[0] MacBook Pro Microphone
+[1] Microsoft Teams Audio
+```
+
+Skip this step to use the first microphone found.
+
+### 3. Record
+
+```sh
+git-push-voice record                      # 5 seconds, default location
+git-push-voice record --seconds 3          # shorter clip
+git-push-voice record --device 1           # choose a microphone
+git-push-voice record --out ~/clips/push.mp3
+```
+
+Say something short — *"pushed it!"*, *"another one done"* — and the file is
+saved to `~/.config/git-push-voice/clip.wav` by default. Recording starts
+immediately, so have your line ready.
+
+### 4. Listen back
+
+```sh
+git-push-voice play ~/.config/git-push-voice/clip.wav
+```
+
+Not happy? Just record again — it overwrites the same file.
+
+### 5. Point the config at it
+
+```sh
+git config --global pushvoice.audio ~/.config/git-push-voice/clip.wav
+```
+
+Now every successful `git push` plays your recording instead of the TTS voice.
+Confirm with `git-push-voice status`:
+
+```
+own voice:    /Users/you/.config/git-push-voice/clip.wav
+```
+
+### 6. (Optional) A folder of reactions
+
+`pushvoice.audio` accepts a **folder** too — one of its audio files
 (`.wav .mp3 .m4a .aiff .aac .ogg .flac .opus`) is picked at random each push,
-so you can collect a pile of reactions.
+so you can collect a pile of reactions:
 
-If the file goes missing, it logs a warning and falls back to the spoken
-message. Clear it with `git config --global --unset pushvoice.audio`.
+```sh
+git config --global pushvoice.audio ~/clips/push-reactions
+```
+
+### Going back to the synthetic voice
+
+```sh
+git config --global --unset pushvoice.audio
+```
+
+If the configured file goes missing, it logs a warning and falls back to the
+spoken message automatically.
 
 ## How it works
 
@@ -118,6 +176,13 @@ git config --global pushvoice.muted true
 
 - **No sound** — run `git-push-voice status` and check `tts backend`. On Linux
   install one of `speech-dispatcher`, `espeak-ng` or `espeak`.
+- **Recording fails with "ffmpeg not found"** — `brew install ffmpeg` (macOS) or
+  install ffmpeg from your package manager.
+- **No microphone listed** — check the terminal has Microphone permission in
+  System Settings → Privacy & Security → Microphone, then retry.
+- **Own voice not playing** — `git-push-voice status` shows `own voice: …
+  (not found)` if the path is wrong; fix it with
+  `git config --global pushvoice.audio <path>`.
 - **Wrapper not firing** — make sure you sourced your rc file, and that
   `command -v git-push-voice` resolves (it must be on `PATH`).
 - **Not supported: fish** — its syntax differs; contributions welcome.
