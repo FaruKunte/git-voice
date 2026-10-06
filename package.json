@@ -1,0 +1,31 @@
+{
+	"name": "git-push-voice",
+	"version": "1.0.0",
+	"description": "Speaks your git push results out loud",
+	"type": "module",
+	"bin": {
+		"git-push-voice": "bin/git-push-voice.js"
+	},
+	"files": [
+		"bin",
+		"src",
+		"README.md"
+	],
+	"scripts": {
+		"test": "node --test test/"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"keywords": [
+		"git",
+		"push",
+		"tts",
+		"voice",
+		"speech",
+		"notification",
+		"hook"
+	],
+	"author": "Paschal Paschal Maximillian",
+	"license": "MIT"
+}
