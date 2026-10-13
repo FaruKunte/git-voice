@@ -7,6 +7,7 @@ test('default success message uses branch and remote', () => {
 });
 
 test('missing remote falls back to "remote"', () => {
+
 	assert.equal(buildMessage({ branch: 'main' }), 'Pushed main to remote');
 });
 
