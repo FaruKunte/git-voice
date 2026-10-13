@@ -27,6 +27,8 @@ test('custom text overrides everything', () => {
 });
 
 test('custom text supports placeholders', () => {
+
+
 	assert.equal(
 		buildMessage({ custom: 'Shipped {branch} to {remote}', branch: 'dev', remote: 'origin' }),
 		'Shipped dev to origin',
